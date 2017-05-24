@@ -61,7 +61,7 @@ NL  = \n | \r | \r\n
 
 
 [ \t]+ { }
-{NL}+  { } 
+{NL}+  { }
 
 .    { System.err.println("Error: unexpected character '"+yytext()+"' na linha "+yyline); return YYEOF; }
 
