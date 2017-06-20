@@ -2,7 +2,7 @@
   import java.io.*;
 %}
    
-%token CLASS, PUBLIC, STATIC, VOID, MAIN , STRING, STRINGAF EXTENDS, RETURN, INT, BOOL
+%token CLASS, PUBLIC, STATIC, VOID,MAIN , STRING, EXTENDS, RETURN, INT, BOOL
 %token IF, ELSE, WHILE, LEN, PRINT, TRUE, FALSE, NEW, AND, THIS 
 %token Identifier, INTEGER_LITERAL 
 
@@ -16,7 +16,7 @@
 %left '['
 
 %%
-Goal :  MainClass ClassDeclarationList  
+Goal : 	MainClass ClassDeclarationList  
      ;
 
 ClassDeclarationList : ClassDeclarationList ClassDeclaration
@@ -26,30 +26,25 @@ ClassDeclarationList : ClassDeclarationList ClassDeclaration
 MainClass : CLASS Identifier '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' Identifier ')' '{' Statement '}' '}'
           ;
 
-ClassDeclaration :  CLASS Identifier extendsOPC '{' VarMethodDeclarationList '}'
+ClassDeclaration : 	CLASS Identifier extendsOPC '{' VarDeclarationList MethodDeclarationList '}'
                  ;
 
 extendsOPC : EXTENDS Identifier
            |
            ;
 
-VarMethodDeclarationList : Type Identifier ';' VarMethodDeclarationList
-                         | MethodDeclarationList
-                         ;
-
+VarDeclarationList : VarDeclarationList VarDeclaration
+                   |
+                   ;
 
 MethodDeclarationList : MethodDeclarationList MethodDeclaration
                       |
                       ;
 
+VarDeclaration 	: 	Type Identifier ';'
 
-MethodDeclaration : PUBLIC Type Identifier '(' ParamListOpc ')' '{' VarStatementList RETURN Exp ';' '}'
+MethodDeclaration : PUBLIC Type Identifier '(' ParamListOpc ')' '{' VarDeclarationList StatementList RETURN Exp ';' '}'
                   ;
-
-VarStatementList : Type Identifier ';'     VarStatementList
-           | Statement          StatementList
-         |
-                 ;
 
 ParamListOpc  : Type Identifier  ParamList
               |
@@ -59,45 +54,41 @@ ParamList : ',' Type Identifier ParamList
           | 
           ;
 
-
 StatementList : StatementList Statement
               |
               ;
 
 
-BaseType :  INT '[' ']'
-       |  BOOL
-       |  INT
-         ;
+Type : 	INT '[' ']'
+	| 	BOOL
+	| 	INT
+	| 	Identifier
+    ;
 
-Type : BaseType
-   |  Identifier
-     ;
-
-Statement   :   '{' StatementList '}'
-  |   IF '(' Exp ')' Statement ELSE Statement
-  |   WHILE '(' Exp ')' Statement
-  |   PRINT '(' Exp ')' ';'
-  |   Identifier '=' Exp ';'
-  |   Identifier '[' Exp ']' '=' Exp ';'
+Statement 	: 	'{' StatementList '}'
+	| 	IF '(' Exp ')' Statement ELSE Statement
+	| 	WHILE '(' Exp ')' Statement
+	| 	PRINT '(' Exp ')' ';'
+	| 	Identifier '=' Exp ';'
+	| 	Identifier '[' Exp ']' '=' Exp ';'
 
 Exp : Exp AND Exp
     | Exp '<' Exp
     | Exp '+' Exp
     | Exp '-' Exp
     | Exp '*'Exp
-  | Exp '[' Exp ']'
-  | Exp '.' LEN
-  | Exp '.' Identifier '(' LExpOpc ')'
-  | INTEGER_LITERAL
-  | TRUE
-  | FALSE
-  | Identifier
-  | THIS
-  | NEW INT '[' Exp ']'
-  | NEW Identifier '(' ')'
-  | '!' Exp
-  | '(' Exp ')'
+	| Exp '[' Exp ']'
+	| Exp '.' LEN
+	| Exp '.' Identifier '(' LExpOpc ')'
+	| INTEGER_LITERAL
+	| TRUE
+	| FALSE
+	| Identifier
+	| THIS
+	| NEW INT '[' Exp ']'
+	| NEW Identifier '(' ')'
+	| '!' Exp
+	| '(' Exp ')'
     ;
 
 LExpOpc : Exp LExpList
@@ -120,17 +111,14 @@ LExpList : ',' Exp  LExpList
       yyl_return = lexer.yylex();
     }
     catch (IOException e) {
-      System.err.println("IO error: "+e.getMessage());
+      System.err.println(IO error :+e.getMessage());
     }
     return yyl_return;
   }
 
-  public void setDebug(boolean debug) {
-    yydebug = debug;
-  }
 
   public void yyerror (String error) {
-    System.err.println ("Error: " + error);// + " at line: "+ lexer.getLine());
+    System.err.println (Error:  + error);
   }
 
 
@@ -151,16 +139,17 @@ LExpList : ',' Exp  LExpList
     }
     else {
       // interactive mode
-      System.out.println("[Quit with CTRL-D]");
-      System.out.print("> ");
+      System.out.println([Quit with CTRL-D]);
+      System.out.print(> );
       interactive = true;
-      yyparser = new Parser(new InputStreamReader(System.in));
+	    yyparser = new Parser(new InputStreamReader(System.in));
     }
 
     yyparser.yyparse();
     
-  //  if (interactive) {
+    if (interactive) {
       System.out.println();
-      System.out.println("done!");
-  //  }
+      System.out.println(done!);
+    }
   }
+

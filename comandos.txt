@@ -1,0 +1,4 @@
+java -jar JFlex.jar lexico.flex 
+./yacc.linux -tv -J exemplo1.y 
+javac Parser.java 
+java Parser
